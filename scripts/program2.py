@@ -14,8 +14,8 @@ embeddings = np.vstack(
         lambda s: np.fromstring(s.strip('[]'), sep=',')
     )
 )
-print(quotes)
-print(embeddings)
+# print(quotes)
+# print(embeddings)
 
 clustering = AgglomerativeClustering(
     distance_threshold=1,
