@@ -4,7 +4,7 @@ from openai import OpenAI
 
 df = pd.read_csv('thedata/quotes-wisdom.csv')
 
-client = OpenAI(api_key="5")
+client = OpenAI(api_key="67")
 
 def get_embedding(text, model="text-embedding-3-small"):
     text = text.replace("\n", " ")
