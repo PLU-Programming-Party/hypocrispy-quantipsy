@@ -8,9 +8,9 @@ from sklearn.cluster import AgglomerativeClustering
 
 df = pd.read_csv('thedata/embeddings.csv')
 
-quotes = df['quote'][:100].tolist()
+description = df['description'][:100].tolist()
 embeddings = np.vstack(
-    df['quote_embedding'][:100].apply(
+    df['embedding'][:100].apply(
         lambda s: np.fromstring(s.strip('[]'), sep=',')
     )
 )
@@ -26,7 +26,7 @@ clustering = AgglomerativeClustering(
 
 labels = clustering.fit_predict(embeddings)
 clusters = defaultdict(list)
-for key, cluster_id in zip(quotes, labels):
+for key, cluster_id in zip(description, labels):
     clusters[cluster_id].append(key)
 
 cluster_rows = []
