@@ -40,14 +40,14 @@ for page in range(1, max_pages + 1):
 
     for a in soup.select("div.groups a"):
         href = a.attrs.get("href")
-        alt = a.attrs.get("alt")
+        title = a.attrs.get("data-title")
         img = a.select_one("div.not-vertical-only img")
         src = img.attrs.get("src") if img else "n/a"
 
-        if href is not None and alt is not None and src is not None:
-            rows.append((str(alt), f"https://knowyourmeme.com{href}", str(src)))
+        if href is not None and title is not None and src is not None:
+            rows.append((str(title), f"https://knowyourmeme.com{href}", str(src)))
         else:
-            raise RuntimeError(f"bad values: {[href, alt, src]}\ntag: {a.prettify()}")
+            raise RuntimeError(f"bad values: {[href, title, src]}\ntag: {a.prettify()}")
 
     sleep(0.5)  # try not to get banned
 
