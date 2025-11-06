@@ -7,7 +7,7 @@ embeddings_df = pd.read_csv('thedata/embeddings.csv')
 
 # quotes = embeddings_df['description'][:100].tolist()
 embeddings = np.vstack(
-    embeddings_df['embedding'][:100].apply(
+    embeddings_df['embedding'][:1000].apply(
         lambda s: np.fromstring(s.strip('[]'), sep=',')
     )
 )

@@ -11,7 +11,7 @@ def get_embedding(text, model="text-embedding-3-small"):
     print(text)
     return client.embeddings.create(input = [text], model=model).data[0].embedding
 
-df['embedding'] = df['description'][:100].apply(lambda x: get_embedding(x, model='text-embedding-3-small'))
+df['embedding'] = df['description'][:1000].apply(lambda x: get_embedding(x, model='text-embedding-3-small'))
 df.to_csv('thedata/embeddings.csv', index=False)
 
 print('Hello world!')

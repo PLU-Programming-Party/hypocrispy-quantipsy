@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        fetch('http://127.0.0.1:5000/gamez?index=67&length=67').then((resp) => resp.json()).then((memez) => memez.map(meme => meme.image_url)).then((urlz) => {
+            urlz.forEach(url => {
+                const img = document.createElement("img");
+                img.setAttribute("src", url);
+                document.body.appendChild(img);
+            });
+        })
+    </script>
+    <style>
+        /* img{width: 50px; height: 50px;} */
+    </style>
+</body>
+</html>

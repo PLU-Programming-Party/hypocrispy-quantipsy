@@ -10,7 +10,7 @@ df = pd.read_csv('thedata/embeddings.csv')
 
 description = df['description'][:100].tolist()
 embeddings = np.vstack(
-    df['embedding'][:100].apply(
+    df['embedding'][:1000].apply(
         lambda s: np.fromstring(s.strip('[]'), sep=',')
     )
 )

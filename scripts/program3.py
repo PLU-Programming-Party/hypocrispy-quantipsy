@@ -14,32 +14,32 @@ def get_embedding(text, model="text-embedding-3-small"):
 embeddings_df = pd.read_csv('thedata/embeddings.csv')
 
 embeddings = np.vstack(
-    embeddings_df['embedding'][:100].apply(
+    embeddings_df['embedding'][:1000].apply(
         lambda s: np.fromstring(s.strip('[]'), sep=',')
     )
 )
 
-def get_closest_meme(index):
+def get_closest_meme(index, length=20):
 
     embedding = get_embedding(quotes_df['description'][index])
 
     distances = euclidean_distances(embeddings, np.expand_dims(embedding, 0))
     dist = [d[0] for d in distances]
     
-    return [dist.index(v) for v in sorted(dist)]
+    return [dist.index(v) for v in sorted(dist)][:length]
 
-curr_index = 700
-traversed_indicies = {curr_index}
+# curr_index = 67
+# traversed_indicies = {curr_index}
 
-for i in range(10):
-    print(quotes_df['description'][curr_index])
-    close = get_closest_meme(curr_index)
+# for i in range(10):
+#     print(quotes_df['description'][curr_index])
+#     close = get_closest_meme(curr_index)
 
-    for index in close:
-        if index not in traversed_indicies:
-            traversed_indicies.add(index)
-            curr_index = index
-            break
+#     for index in close:
+#         if index not in traversed_indicies:
+#             traversed_indicies.add(index)
+#             curr_index = index
+#             break
 
 
-print('Hello world!')
+# print('Hello world!')
