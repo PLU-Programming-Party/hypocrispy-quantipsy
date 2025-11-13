@@ -26,7 +26,7 @@ def get_closest_meme(index, length=20):
     distances = euclidean_distances(embeddings, np.expand_dims(embedding, 0))
     dist = [d[0] for d in distances]
     
-    return [dist.index(v) for v in sorted(dist)][:length]
+    return [dist.index(v) for v in sorted(dist)][1:length + 1]
 
 # curr_index = 67
 # traversed_indicies = {curr_index}

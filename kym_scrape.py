@@ -27,7 +27,18 @@ def get_max_page():
     return max(page_nums)
 
 
-rows: list[tuple[str, str, str]] = []
+def getTextOfAboutPlease(url):
+    resp = requests.get(url).text
+    soup = BeautifulSoup(resp, "html.parser")
+    about = soup.select_one("#about + p")
+    if about is not None:
+        return(about.text)
+    else:
+        about = soup.select_one("#overview + p")
+    return about
+    
+
+rows: list[tuple[str, str, str, str]] = []
 max_pages = get_max_page()
 for page in range(1, max_pages + 1):
     print(f"scraping page {page} of {max_pages}")
@@ -45,7 +56,10 @@ for page in range(1, max_pages + 1):
         src = img.attrs.get("src") if img else "n/a"
 
         if href is not None and title is not None and src is not None:
-            rows.append((str(title), f"https://knowyourmeme.com{href}", str(src)))
+
+            about = getTextOfAboutPlease(f"https://knowyourmeme.com{href}")
+            print(title, about)
+            rows.append((str(title), f"https://knowyourmeme.com{href}", str(src), about))
         else:
             raise RuntimeError(f"bad values: {[href, title, src]}\ntag: {a.prettify()}")
 
@@ -53,7 +67,7 @@ for page in range(1, max_pages + 1):
 
 with open("known_memes.csv", "w", newline="", encoding="utf-8") as csv_file:
     writer = csv.writer(csv_file)
-    writer.writerow(["description", "kym_url", "image_url"])
+    writer.writerow(["description", "kym_url", "image_url", "theAbout"])
     writer.writerows(rows)
 
 print(f"scraped {len(rows)} memes")

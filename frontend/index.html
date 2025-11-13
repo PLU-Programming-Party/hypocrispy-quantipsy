@@ -7,13 +7,19 @@
 </head>
 <body>
     <script>
-        fetch('http://127.0.0.1:5000/gamez?index=67&length=67').then((resp) => resp.json()).then((memez) => memez.map(meme => meme.image_url)).then((urlz) => {
-            urlz.forEach(url => {
-                const img = document.createElement("img");
-                img.setAttribute("src", url);
-                document.body.appendChild(img);
-            });
-        })
+        let count = 0;
+        function theFunction(index, length) {
+            fetch(`http://127.0.0.1:5000/gamez?index=${index}&length=${length}`).then((resp) => resp.json()).then((memez) => {
+                memez.forEach(meme => {
+                    const img = document.createElement("img");
+                    img.setAttribute("src", meme.image_url);
+                    img.setAttribute("title", meme.description);
+                    img.addEventListener("click", ()=>theFunction(meme.id, length));
+                    document.body.appendChild(img);
+                });
+            })
+        }
+        theFunction(67, 3);
     </script>
     <style>
         /* img{width: 50px; height: 50px;} */
