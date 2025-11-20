@@ -35,39 +35,35 @@ def getTextOfAboutPlease(url):
         return(about.text)
     else:
         about = soup.select_one("#overview + p")
-    return about
+    return about.text
     
-
-rows: list[tuple[str, str, str, str]] = []
 max_pages = get_max_page()
-for page in range(1, max_pages + 1):
-    print(f"scraping page {page} of {max_pages}")
-
-    resp = requests.get(
-        f"https://knowyourmeme.com/memes/page/{page}?kind=confirmed&sort=newest"
-    ).text
-
-    soup = BeautifulSoup(resp, "html.parser")
-
-    for a in soup.select("div.groups a"):
-        href = a.attrs.get("href")
-        title = a.attrs.get("data-title")
-        img = a.select_one("div.not-vertical-only img")
-        src = img.attrs.get("src") if img else "n/a"
-
-        if href is not None and title is not None and src is not None:
-
-            about = getTextOfAboutPlease(f"https://knowyourmeme.com{href}")
-            print(title, about)
-            rows.append((str(title), f"https://knowyourmeme.com{href}", str(src), about))
-        else:
-            raise RuntimeError(f"bad values: {[href, title, src]}\ntag: {a.prettify()}")
-
-    sleep(0.5)  # try not to get banned
 
 with open("known_memes.csv", "w", newline="", encoding="utf-8") as csv_file:
     writer = csv.writer(csv_file)
     writer.writerow(["description", "kym_url", "image_url", "theAbout"])
-    writer.writerows(rows)
 
-print(f"scraped {len(rows)} memes")
+    for page in range(1, max_pages + 1):
+        print(f"scraping page {page} of {max_pages}")
+
+        resp = requests.get(
+            f"https://knowyourmeme.com/memes/page/{page}?kind=confirmed&sort=newest"
+        ).text
+
+        soup = BeautifulSoup(resp, "html.parser")
+
+        for a in soup.select("div.groups a"):
+            href = a.attrs.get("href")
+            title = a.attrs.get("data-title")
+            img = a.select_one("div.not-vertical-only img")
+            src = img.attrs.get("src") if img else "n/a"
+
+            if href is not None and title is not None and src is not None:
+
+                about = getTextOfAboutPlease(f"https://knowyourmeme.com{href}")
+                print(title, about)
+                writer.writerow((str(title), f"https://knowyourmeme.com{href}", str(src), about))
+            else:
+                raise RuntimeError(f"bad values: {[href, title, src]}\ntag: {a.prettify()}")
+
+        sleep(0.5)  # try not to get banned
