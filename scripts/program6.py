@@ -13,7 +13,8 @@ with open("thedata/known_memes.csv") as file:
         text = f"{line['description']} -- {line['theAbout']}"
         # embedding = get_embedding(text)
         rating = get_motion_picture_association_rating_please_for_our_description_of_a_meme_thank_you(text)
-
+        
+        
 # with open("frontend/embeddings.js", "w") as file:
 #     file.write("const data =")
 #     file.write(json.dumps(data))

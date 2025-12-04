@@ -39,10 +39,17 @@ def getTextOfAboutPlease(url):
     
 max_pages = get_max_page()
 
-with open("known_memes.csv", "w", newline="", encoding="utf-8") as csv_file:
-    writer = csv.writer(csv_file)
-    writer.writerow(["description", "kym_url", "image_url", "theAbout"])
+with open("thedata/known_memes.csv", "r") as csv_file:
+    reader = csv.DictReader(csv_file)
+    hrefs = {d["kym_url"] for d in reader}
+    
 
+
+with open("thedata/known_memes.csv", "a", newline="", encoding="utf-8") as csv_file:
+    writer = csv.writer(csv_file)
+    # writer.writerow(["description", "kym_url", "image_url", "theAbout"]) # if file is new
+
+    
     for page in range(1, max_pages + 1):
         print(f"scraping page {page} of {max_pages}")
 
@@ -54,16 +61,22 @@ with open("known_memes.csv", "w", newline="", encoding="utf-8") as csv_file:
 
         for a in soup.select("div.groups a"):
             href = a.attrs.get("href")
+            link = f"https://knowyourmeme.com{href}"
             title = a.attrs.get("data-title")
             img = a.select_one("div.not-vertical-only img")
             src = img.attrs.get("src") if img else "n/a"
 
             if href is not None and title is not None and src is not None:
-
-                about = getTextOfAboutPlease(f"https://knowyourmeme.com{href}")
-                print(title, about)
-                writer.writerow((str(title), f"https://knowyourmeme.com{href}", str(src), about))
+                if link in hrefs:
+                    print(f"67 skipping {link}")
+                    pass
+                if link not in hrefs:     
+                    about = getTextOfAboutPlease(link)
+                    print(title, about)
+                    writer.writerow((str(title), link, str(src), about))
+                    sleep(0.5)
             else:
                 raise RuntimeError(f"bad values: {[href, title, src]}\ntag: {a.prettify()}")
+            
 
         sleep(0.5)  # try not to get banned
