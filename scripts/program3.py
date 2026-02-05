@@ -3,30 +3,43 @@ import numpy as np
 from sklearn.metrics.pairwise import euclidean_distances, manhattan_distances
 from openai import OpenAI
 
-quotes_df = pd.read_csv('thedata/known_memes.csv')
+quotes_df = pd.read_csv("thedata/known_memes.csv")
 
 client = OpenAI(api_key="67")
 
+
 def get_embedding(text, model="text-embedding-3-small"):
     text = text.replace("\n", " ")
-    return client.embeddings.create(input = [text], model=model).data[0].embedding
+    return client.embeddings.create(input=[text], model=model).data[0].embedding
 
-embeddings_df = pd.read_csv('thedata/embeddings.csv')
+
+embeddings_df = pd.read_csv("thedata/embeddings.csv")
 
 embeddings = np.vstack(
-    embeddings_df['embedding'][:1000].apply(
-        lambda s: np.fromstring(s.strip('[]'), sep=',')
+    embeddings_df["embedding"][:1000].apply(
+        lambda s: np.fromstring(s.strip("[]"), sep=",")
     )
 )
 
-def get_closest_meme(index, length=20):
 
-    embedding = get_embedding(quotes_df['description'][index])
+def calculate_distance(index1, index2):
+    print(index1, index2)
+    em1 = get_embedding(quotes_df["description"][index1])
+    em2 = get_embedding(quotes_df["description"][index2])
+
+    return np.linalg.norm(np.array(em1) - np.array(em2))
+
+
+def get_closest_meme(index, length=20, exclude_indexes={}):
+    embedding = get_embedding(quotes_df["description"][index])
 
     distances = euclidean_distances(embeddings, np.expand_dims(embedding, 0))
     dist = [d[0] for d in distances]
-    
-    return [dist.index(v) for v in sorted(dist)][1:length + 1]
+
+    return [
+        (dist.index(v), v) for v in sorted(dist) if dist.index(v) not in exclude_indexes
+    ][1 : length + 1]
+
 
 # curr_index = 67
 # traversed_indicies = {curr_index}

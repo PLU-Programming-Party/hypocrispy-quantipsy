@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main>
+      <div id="meme_central"></div>
+      <div id="destination"></div>
+    </main>
+    <script>
+      let count = 0;
+      const destinationId = 42;
+      function theFunction(index, length) {
+        fetch(`gamez?index=${index}&length=${length}&target=${destinationId}`)
+          .then((resp) => resp.json())
+          .then((memez) => {
+            memez.forEach((meme, i) => {
+              const id = `meme_${i}`;
+              document.getElementById(id)?.remove();
+              img = document.createElement("img");
+              img.id = id;
+              img.className = "meme-img";
+              img.setAttribute("src", meme.image_url);
+              img.setAttribute("title", meme.description);
+              img.addEventListener("click", () => theFunction(meme.id, length));
+              document.getElementById("meme_central").appendChild(img);
+            });
+            console.log(memez.map((m) => m.distance_to_target));
+          });
+      }
+      theFunction(67, 12);
+      fetch(`meme/${destinationId}`)
+        .then((resp) => resp.json())
+        .then((meme) => {
+          const dest = document.getElementById("destination");
+          const img = document.createElement("img");
+          img.setAttribute("src", meme.image_url);
+          img.setAttribute("title", meme.description);
+          dest.appendChild(img);
+        });
+    </script>
+    <style>
+      #meme_central {
+        display: flex;
+      }
+      .meme-img {
+        width: 200px;
+        margin: 10px;
+        cursor: pointer;
+      }
+    </style>
+  </body>
+</html>
