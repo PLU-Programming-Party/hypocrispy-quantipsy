@@ -12,7 +12,7 @@
     </main>
     <script>
       let count = 0;
-      const destinationId = 42;
+      const destinationId = 420;
       function theFunction(index, length) {
         fetch(`gamez?index=${index}&length=${length}&target=${destinationId}`)
           .then((resp) => resp.json())
@@ -31,7 +31,7 @@
             console.log(memez.map((m) => m.distance_to_target));
           });
       }
-      theFunction(67, 12);
+      theFunction(69, 5);
       fetch(`meme/${destinationId}`)
         .then((resp) => resp.json())
         .then((meme) => {
